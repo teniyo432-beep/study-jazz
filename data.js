@@ -17,31 +17,34 @@ window.SCENES = [
     win: { x: 0.39, y: 0.2, w: 0.31, h: 0.66 } },
 ];
 
-// style: lofi | swing | bossa  /  prog: 코드 진행 (key 기준 반음, 품질)
+// 재즈 음원: Kevin MacLeod (incompetech.com), CC BY 4.0 — 곡명·작곡가를 플레이어에 표시해 출처를 밝힌다.
+// title = 곡과 어울리는 상황으로 지은 언어별 이름, original = 원곡명.
+// style/bpm/key 는 음원 파일을 불러오지 못할 때만 쓰는 합성 재즈(대체용) 설정이다.
+const CREDIT = 'Kevin MacLeod (incompetech.com) · CC BY 4.0';
 window.TRACKS = [
-  { id: 't1', src: '', style: 'lofi',  bpm: 72,  key: 2,
+  { id: 't1', src: 'assets/music/t1.mp3', style: 'lofi',  bpm: 72,  key: 2,
     title: { ko: '비 오는 창가에서 책 읽는 오후', en: 'Rainy Window Reading Afternoon' },
-    original: 'Prototype Lo-fi No.1',
+    original: 'Study And Relax', credit: CREDIT,
     tags: ['rain', 'read'] },
-  { id: 't2', src: '', style: 'swing', bpm: 100, key: 0,
-    title: { ko: '뉴욕 심야 퇴근길', en: 'Late Night Commute Through Manhattan' },
-    original: 'Prototype Swing No.1',
-    tags: ['night', 'commute'] },
-  { id: 't3', src: '', style: 'bossa', bpm: 84,  key: 5,
+  { id: 't2', src: 'assets/music/t2.mp3', style: 'swing', bpm: 100, key: 0,
+    title: { ko: '도시 야경을 걷는 밤', en: 'Night Walk Through City Lights' },
+    original: 'Night in Venice', credit: CREDIT,
+    tags: ['night', 'walk'] },
+  { id: 't3', src: 'assets/music/t3.mp3', style: 'bossa', bpm: 84,  key: 5,
     title: { ko: '노을 지는 카페 테라스', en: 'Sunset Café Terrace' },
-    original: 'Prototype Bossa No.1',
+    original: 'Bossa Antigua', credit: CREDIT,
     tags: ['sunset', 'cafe'] },
-  { id: 't4', src: '', style: 'lofi',  bpm: 64,  key: 9,
+  { id: 't4', src: 'assets/music/t4.mp3', style: 'lofi',  bpm: 64,  key: 9,
     title: { ko: '새벽 세 시, 깊은 집중', en: '3 AM Deep Focus' },
-    original: 'Prototype Lo-fi No.2',
+    original: 'Cool Vibes', credit: CREDIT,
     tags: ['night', 'focus'] },
-  { id: 't5', src: '', style: 'swing', bpm: 88,  key: 7,
-    title: { ko: '비 갠 뒤 천천히 걷는 길', en: 'A Slow Walk After the Rain' },
-    original: 'Prototype Swing No.2',
-    tags: ['rain', 'walk'] },
-  { id: 't6', src: '', style: 'bossa', bpm: 76,  key: 10,
+  { id: 't5', src: 'assets/music/t5.mp3', style: 'swing', bpm: 88,  key: 7,
+    title: { ko: '호텔 라운지의 느린 오후', en: 'Slow Afternoon in a Hotel Lounge' },
+    original: 'Lobby Time', credit: CREDIT,
+    tags: ['hotel', 'afternoon'] },
+  { id: 't6', src: 'assets/music/t6.mp3', style: 'bossa', bpm: 76,  key: 10,
     title: { ko: '일요일 아침 서재', en: 'Sunday Morning Study' },
-    original: 'Prototype Bossa No.2',
+    original: 'Backed Vibes (clean)', credit: CREDIT,
     tags: ['morning', 'study'] },
 ];
 
