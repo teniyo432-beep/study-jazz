@@ -16,7 +16,7 @@
 - `assets/scenes/` — 장면 사진과 출처 ([README](assets/scenes/README.md))
 
 ## 재즈 음원
-Kevin MacLeod의 CC BY 4.0 재즈 6곡을 `assets/music/`에 넣어 재생합니다 ([출처](assets/music/README.md)). 음원을 불러오지 못하면 브라우저에서 합성한 재즈로 대체됩니다.
+Kevin MacLeod의 CC BY 4.0 재즈 12곡을 `assets/music/`에 넣어 재생합니다 ([출처](assets/music/README.md)). 음원을 불러오지 못하면 브라우저에서 합성한 재즈로 대체됩니다.
 
 ## 아직 없는 것
 즐겨찾기/선택적 로그인(F10), 실시간 날씨 연동(F11).
