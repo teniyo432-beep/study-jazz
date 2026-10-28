@@ -15,6 +15,12 @@ window.SCENES = [
     win: { x: 0.17, y: 0.2, w: 0.64, h: 0.7 } },
   { id: 'curtain-room',  image: 'assets/scenes/curtain-room.jpg',  name: { ko: '커튼 드리운 창가',   en: 'Curtained Window' },
     win: { x: 0.39, y: 0.2, w: 0.31, h: 0.66 } },
+  { id: 'sunset-room',   image: 'assets/scenes/sunset-room.jpg',   name: { ko: '노을 지는 방 창가',  en: 'Sunset Room Window' },
+    win: { x: 0.29, y: 0.49, w: 0.42, h: 0.39 } },
+  { id: 'night-sea',     image: 'assets/scenes/night-sea.jpg',     name: { ko: '밤바다 커튼 창가',   en: 'Night Sea Window' },
+    win: { x: 0.34, y: 0.0, w: 0.36, h: 0.9 } },
+  { id: 'night-office',  image: 'assets/scenes/night-office.jpg',  name: { ko: '야간 작업실 창가',   en: 'Night Office Window' },
+    win: { x: 0.28, y: 0.04, w: 0.27, h: 0.86 } },
 ];
 
 // 재즈 음원: Kevin MacLeod (incompetech.com), CC BY 4.0 — 곡명·작곡가를 플레이어에 표시해 출처를 밝힌다.
@@ -84,6 +90,8 @@ window.PRESETS = [
   { id: 'p2', scene: 'city-night',    weather: 'clear',   track: 't2', name: { ko: '도시 야경 작업',      en: 'City Night Work' } },
   { id: 'p3', scene: 'hotel-room',    weather: 'snow',    track: 't4', name: { ko: '눈 오는 밤 집중',    en: 'Snowy Night Focus' } },
   { id: 'p4', scene: 'sunset-city',  weather: 'clear', track: 't3', name: { ko: '노을 산책 기분',     en: 'Sunset Stroll Mood' } },
+  { id: 'p5', scene: 'night-sea',    weather: 'rain',  track: 't8', name: { ko: '비 오는 밤바다 사색', en: 'Rainy Night Sea Reverie' } },
+  { id: 'p6', scene: 'night-office', weather: 'clear', track: 't11', name: { ko: '야간 작업실 집중',   en: 'Night Office Focus' } },
 ];
 
 window.THEMES = [
