@@ -4,7 +4,7 @@
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- 상태 (localStorage 저장/복원) ----------
-  const defaults = { scene: 'city-overcast', weather: 'rain', intensity: 0.6, jazzVol: 0.7, weatherVol: 0.5, track: 't1', lang: 'ko', focusMin: 25, restMin: 5, theme: 'warm' };
+  const defaults = { scene: 'city-overcast', weather: 'rain', intensity: 0.6, jazzVol: 0.85, weatherVol: 0.4, track: 't1', lang: 'ko', focusMin: 25, restMin: 5, theme: 'warm' };
   let state = { ...defaults };
   try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
   const byId = (arr, id) => arr.find((x) => x.id === id) || arr[0];
