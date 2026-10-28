@@ -108,7 +108,9 @@
     async loadTrack(track, autoplay) {
       this.track = track;
       this.stopSynth();
-      if (this.el) { this.el.pause(); this.el = null; }
+      if (this.el) {   // 이전 곡의 이벤트가 늦게 들어와 새 곡을 방해하지 않도록 끊는다
+        this.el.onended = this.el.onerror = null; this.el.pause(); this.el.removeAttribute('src'); this.el = null;
+      }
       if (!autoplay) return;
       await this.play();
     }
@@ -117,11 +119,13 @@
     startTrack() {
       const tr = this.track; if (!tr) return;
       if (tr.src) {
-        const el = new Audio(tr.src); el.volume = this.jazzVol;
-        el.onended = () => this.onTrackEnd();
-        el.onerror = () => { this.el = null; if (this.playing) this.startSynth(); };
+        const el = new Audio(tr.src); el.volume = this.jazzVol; el.preload = 'auto';
+        // 음원을 불러오지 못하면(파일 없음 등) 합성 재즈로 대체한다
+        const fallback = () => { if (this.el !== el) return; this.el = null; if (this.playing) this.startSynth(); };
+        el.onended = () => { if (this.el === el) this.onTrackEnd(); };
+        el.onerror = fallback;
         this.el = el;
-        el.play().catch(() => { this.el = null; if (this.playing) this.startSynth(); });
+        el.play().catch((e) => { if (e && e.name === 'AbortError') return; fallback(); });
       } else this.startSynth();
     }
 
