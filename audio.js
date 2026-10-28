@@ -16,11 +16,12 @@
   const QUAL = { M7: [4, 7, 11, 14], M9: [4, 7, 11, 14], m7: [3, 7, 10, 14], m9: [3, 7, 10, 14], d7: [4, 10, 14, 16], d9: [4, 10, 14, 16] };
   const SCALE_TONES = { M7: [0, 2, 4, 7, 9, 11], M9: [0, 2, 4, 7, 9, 11], m7: [0, 2, 3, 5, 7, 10], m9: [0, 2, 3, 5, 7, 10], d7: [0, 2, 4, 7, 9, 10], d9: [0, 2, 4, 7, 9, 10] };
   const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+  const JAZZ_BOOST = 1.8;   // 재즈 볼륨 증폭 배율 (슬라이더 최대일 때 원음의 약 1.8배, 리미터로 깨짐 방지)
 
   class AudioEngine {
     constructor() {
       this.ctx = null; this.playing = false; this.track = null;
-      this.jazzVol = 0.7; this.weatherVol = 0.5;
+      this.jazzVol = 0.85; this.weatherVol = 0.4;
       this.weather = 'clear'; this.intensity = 0.6;
       this.onTrackEnd = () => {}; this.onThunder = () => {};
       this.timer = null;
@@ -29,8 +30,13 @@
     ensure() {
       if (this.ctx) return;
       const ctx = this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-      this.master = ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(ctx.destination);
-      this.jazzGain = ctx.createGain(); this.jazzGain.gain.value = this.jazzVol; this.jazzGain.connect(this.master);
+      // 최종 출력 앞에 리미터를 둬서 재즈를 크게 키워도 소리가 깨지지 않게 한다
+      this.limiter = ctx.createDynamicsCompressor();
+      this.limiter.threshold.value = -4; this.limiter.knee.value = 0; this.limiter.ratio.value = 12;
+      this.limiter.attack.value = 0.003; this.limiter.release.value = 0.25;
+      this.limiter.connect(ctx.destination);
+      this.master = ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(this.limiter);
+      this.jazzGain = ctx.createGain(); this.jazzGain.gain.value = this.jazzVol * JAZZ_BOOST; this.jazzGain.connect(this.master);
       this.weatherGain = ctx.createGain(); this.weatherGain.gain.value = this.weatherVol; this.weatherGain.connect(this.master);
 
       // 재즈 버스: 로우패스 + 짧은 딜레이
@@ -52,6 +58,11 @@
       this.crackle = ctx.createBuffer(1, cl, ctx.sampleRate);
       const c = this.crackle.getChannelData(0);
       for (let i = 0; i < cl; i++) c[i] = Math.random() < 0.0006 ? (Math.random() * 2 - 1) : 0;
+      // 갈색 노이즈: 천둥의 묵직한 우르릉에 쓴다 (흰색 노이즈보다 저음이 풍부하다)
+      const bl = ctx.sampleRate * 8;
+      this.brown = ctx.createBuffer(1, bl, ctx.sampleRate);
+      const bd = this.brown.getChannelData(0); let last = 0;
+      for (let i = 0; i < bl; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; bd[i] = last * 3.5; }
 
       this.buildWeather();
     }
@@ -74,23 +85,49 @@
       if (!this.ctx) return;
       const t = this.ctx.currentTime, k = this.intensity, w = this.weather;
       const set = (g, v) => g.gain.setTargetAtTime(v, t, 0.6);
-      // 지속 소리는 비뿐이다. 눈은 소리가 없고, 천둥은 우르릉 소리만 난다 (타이밍은 app.js가 번쩍임과 맞춰 호출). 바람 소리는 없다.
-      set(this.rainGain, w === 'rain' ? 0.1 + k * 0.5 : 0);
+      // 비: 빗소리. 천둥: 은은한 빗소리 위로 천둥이 친다(천둥 소리는 app.js가 번쩍임과 맞춰 rumble 호출). 눈은 소리 없음, 바람 소리는 없다.
+      set(this.rainGain, w === 'rain' ? 0.1 + k * 0.5 : w === 'thunder' ? 0.06 + k * 0.22 : 0);
     }
+    // 천둥: 가까이서 "쾅" 하고 갈라지는 소리 + 몇 초 동안 굴러가는 우르릉.
+    // 노트북 스피커에서도 들리도록 중저음(150~1000Hz) 대역을 충분히 넣는다.
     rumble() {
-      const ctx = this.ctx, t = ctx.currentTime;
-      const src = ctx.createBufferSource(); src.buffer = this.noise; src.loop = true;
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(220, t); lp.frequency.exponentialRampToValueAtTime(60, t + 3.5);
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.5 + this.intensity * 0.5, t + 0.25);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 4);
-      src.connect(lp); lp.connect(g); g.connect(this.weatherGain);
-      src.start(t); src.stop(t + 4.2);
+      const ctx = this.ctx, t = ctx.currentTime, k = this.intensity, out = this.weatherGain;
+      const near = Math.random() < 0.6;                     // 가까운 천둥은 갈라지는 소리가 있다
+      if (near) {
+        for (let i = 0; i < 4; i++) {                        // 짧게 여러 번 갈라지는 소리
+          const ct = t + i * (0.04 + Math.random() * 0.07);
+          const s = ctx.createBufferSource(); s.buffer = this.noise;
+          const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900 + Math.random() * 1600; bp.Q.value = 0.7;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0.0001, ct); g.gain.exponentialRampToValueAtTime((0.5 + k * 0.4) * (1 - i * 0.18), ct + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.0001, ct + 0.25 + Math.random() * 0.2);
+          s.connect(bp); bp.connect(g); g.connect(out); s.start(ct, Math.random()); s.stop(ct + 0.6);
+        }
+      }
+      // 우르릉: 갈색 노이즈를 저역 통과시키며 점점 낮고 멀어지게, 음량은 여러 번 출렁이게
+      const dur = 5 + Math.random() * 3, st = t + (near ? 0.05 : 0);
+      const src = ctx.createBufferSource(); src.buffer = this.brown;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.5;
+      lp.frequency.setValueAtTime(near ? 1100 : 600, st); lp.frequency.exponentialRampToValueAtTime(140, st + dur);
+      const body = ctx.createBiquadFilter(); body.type = 'peaking'; body.frequency.value = 180; body.gain.value = 8; body.Q.value = 0.8;
+      const g = ctx.createGain(), peak = (near ? 1.1 : 0.75) * (0.6 + k * 0.6);
+      const steps = 24, curve = new Float32Array(steps);
+      for (let i = 0; i < steps; i++) {
+        const p = i / (steps - 1), env = p < 0.06 ? p / 0.06 : Math.pow(1 - (p - 0.06) / 0.94, 1.6);
+        curve[i] = Math.max(0.0001, peak * env * (0.65 + Math.random() * 0.45));   // 굴러가며 출렁이는 느낌
+      }
+      g.gain.setValueAtTime(0.0001, st); g.gain.setValueCurveAtTime(curve, st + 0.01, dur);
+      src.connect(lp); lp.connect(body); body.connect(g); g.connect(out);
+      src.start(st, Math.random() * 2); src.stop(st + dur + 0.1);
       this.onThunder();
     }
     setWeather(id, intensity) { this.weather = id; this.intensity = intensity; this.applyWeather(); }
     setWeatherVol(v) { this.weatherVol = v; if (this.ctx) this.weatherGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05); }
-    setJazzVol(v) { this.jazzVol = v; if (this.ctx) this.jazzGain.gain.setTargetAtTime(v, this.ctx.currentTime, 0.05); if (this.el) this.el.volume = v; }
+    setJazzVol(v) {
+      this.jazzVol = v;
+      if (this.ctx) this.jazzGain.gain.setTargetAtTime(v * JAZZ_BOOST, this.ctx.currentTime, 0.05);
+      if (this.el && !this.el._routed) this.el.volume = v;    // 증폭 경로를 못 쓰는 경우(로컬 파일 등)만 기본 볼륨 사용
+    }
 
     // ---------- 재생 제어 ----------
     async play() {
@@ -120,6 +157,11 @@
       const tr = this.track; if (!tr) return;
       if (tr.src) {
         const el = new Audio(tr.src); el.volume = this.jazzVol; el.preload = 'auto';
+        // 웹(http/https)에서는 음원을 오디오 처리 경로로 보내 브라우저 볼륨 상한보다 크게 키운다.
+        // 로컬 파일(file://)에서는 보안 정책상 소리가 막힐 수 있어 기본 볼륨으로 재생한다.
+        if (/^https?:$/.test(location.protocol)) {
+          try { this.ctx.createMediaElementSource(el).connect(this.jazzGain); el._routed = true; el.volume = 1; } catch (e) {}
+        }
         // 음원을 불러오지 못하면(파일 없음 등) 합성 재즈로 대체한다
         const fallback = () => { if (this.el !== el) return; this.el = null; if (this.playing) this.startSynth(); };
         el.onended = () => { if (this.el === el) this.onTrackEnd(); };
