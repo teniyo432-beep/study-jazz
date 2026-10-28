@@ -65,7 +65,7 @@
 
     $('#p-music').innerHTML = `<ul class="tracks">${TRACKS.map((tr) =>
       `<li><button class="track ${tr.id === state.track ? 'on' : ''}" data-track="${tr.id}">
-        <b>${tr.title[state.lang]}</b><small>${t('original')}: ${tr.original} · ${tr.style}</small></button></li>`).join('')}</ul>`;
+        <b>${tr.title[state.lang]}</b><small>${t('original')}: ${tr.original} · ${tr.credit || ''}</small></button></li>`).join('')}</ul>`;
 
     $('#p-timer').innerHTML = `
       <div class="tmode" id="tmode"></div><div class="tbig" id="tbig"></div>
