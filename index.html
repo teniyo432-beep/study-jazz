@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study Jazz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <img id="bgImage" alt="">
+  <video id="bgVideo" muted loop playsinline></video>
+  <canvas id="fx"></canvas>
+
+  <div id="badge" class="badge"></div>
+
+  <div id="start">
+    <h1 id="title"></h1>
+    <button id="startBtn"><span id="startText"></span></button>
+  </div>
+
+  <div id="ui">
+    <!-- 왼쪽: 세로 메뉴 + 펼쳐지는 패널 -->
+    <nav id="rail">
+      <button data-panel="scene"><i>▣</i><span></span></button>
+      <button data-panel="weather"><i>☂</i><span></span></button>
+      <button data-panel="timer"><i>◔</i><span></span></button>
+      <button data-panel="presets"><i>★</i><span></span></button>
+      <button data-panel="theme"><i>◐</i><span></span></button>
+      <hr>
+      <button id="fsBtn" title=""><i>⛶</i><span></span></button>
+      <button id="langBtn"><i></i><span></span></button>
+    </nav>
+    <div id="lpanels">
+      <section class="panel" id="p-scene"></section>
+      <section class="panel" id="p-weather"></section>
+      <section class="panel" id="p-timer"></section>
+      <section class="panel" id="p-presets"></section>
+      <section class="panel" id="p-theme"></section>
+    </div>
+
+    <!-- 하단 중앙: 음악 설정 + 재생바 -->
+    <div id="bottom">
+      <section class="panel" id="p-music"></section>
+      <nav id="dock">
+        <button id="prev" class="ic">⏮</button>
+        <button id="playBtn" class="ic big">▶</button>
+        <button id="next" class="ic">⏭</button>
+        <div id="now" class="now"></div>
+        <label class="vol"><span id="volMin"></span><input type="range" id="jazzVol" min="0" max="100"><span id="volMax"></span></label>
+        <button id="musicBtn" class="ic">♪</button>
+      </nav>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="scenes.js"></script>
+  <script src="audio.js"></script>
+  <script src="weather.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
