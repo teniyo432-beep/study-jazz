@@ -11,5 +11,11 @@
 | t4.mp3 | 새벽 세 시, 깊은 집중 / 3 AM Deep Focus | "Cool Vibes" |
 | t5.mp3 | 호텔 라운지의 느린 오후 / Slow Afternoon in a Hotel Lounge | "Lobby Time" |
 | t6.mp3 | 일요일 아침 서재 / Sunday Morning Study | "Backed Vibes (clean)" |
+| t7.mp3 | 주말 아침 브런치 카페 / Weekend Brunch Café | "Jazz Brunch" |
+| t8.mp3 | 촛불 켠 늦은 밤 / Late Night by Candlelight | "Smooth Lovin" |
+| t9.mp3 | 오래된 라디오에서 흐르는 저녁 / Evening on an Old Radio | "In Your Arms" |
+| t10.mp3 | 창가에 드는 오후 햇살 / Afternoon Sun by the Window | "BossaBossa" |
+| t11.mp3 | 동트기 전 조용한 책상 / Quiet Desk Before Dawn | "Daybreak" |
+| t12.mp3 | 도시의 밤 라운지 / City Night Lounge | "Backbay Lounge" |
 
 출처 표기 예: "Study And Relax" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
