@@ -10,6 +10,9 @@
 | 호텔 방 창가 | hotel-room.jpg | [Skyscraper behind Window of Hotel Bedroom](https://www.pexels.com/photo/20021123/) | Thomas Balabaud |
 | 노을 지는 창가 | sunset-city.jpg | [Urban Sunset View Through Large Windows](https://www.pexels.com/photo/39109151/) | Áλικα |
 | 커튼 드리운 창가 | curtain-room.jpg | [View of a City from a Window of a High Floor Apartment](https://www.pexels.com/photo/16502245/) | Pin Han Lim |
+| 노을 지는 방 창가 | sunset-room.jpg | [Lamp Near Window](https://www.pexels.com/photo/3551216/) | Aleksey Kuprikov |
+| 밤바다 커튼 창가 | night-sea.jpg | [From balcony view of night sea with mountains](https://www.pexels.com/photo/4601868/) | Lucas Pezeta |
+| 야간 작업실 창가 | night-office.jpg | [Dimly Lit Office Room with a Computer Desk by a Window](https://www.pexels.com/photo/14963655/) | Iryna Varanovich |
 
 ## 사진 바꾸기·추가하기
 - 같은 파일 이름으로 덮어쓰거나, `data.js`의 `SCENES`에 항목을 추가합니다. 영상은 `video: 'assets/scenes/<id>.mp4'`를 넣으면 우선 사용됩니다.
