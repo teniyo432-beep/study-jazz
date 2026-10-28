@@ -61,7 +61,7 @@
       `<button class="chip ${w.id === state.weather ? 'on' : ''}" data-weather="${w.id}"><i>${w.icon}</i>${w.name[state.lang]}</button>`).join('')}</div>
       <label class="row"><span>${t('intensity')}</span><input type="range" id="intensity" min="0" max="100" value="${Math.round(state.intensity * 100)}"></label>
       <label class="row"><span>${t('weatherSfx')}</span><input type="range" id="weatherVol" min="0" max="100" value="${Math.round(state.weatherVol * 100)}"></label>
-      <p class="note">${hasWin ? t('windowOnly') : t('noWindow')}</p>`;
+      ${hasWin ? '' : `<p class="note">${t('noWindow')}</p>`}`;
 
     $('#p-music').innerHTML = `<ul class="tracks">${TRACKS.map((tr) =>
       `<li><button class="track ${tr.id === state.track ? 'on' : ''}" data-track="${tr.id}">
